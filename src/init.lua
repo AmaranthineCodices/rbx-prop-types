@@ -10,7 +10,7 @@ local BUILTIN_TYPE_NAMES = {
 	"PhysicalProperties", "Ray", "Rect",
 	"Region3", "Region3int16", "TweenInfo",
 	"UDim", "UDim2", "Vector2", "Vector3",
-	"Vector3int16"
+	"Vector3int16", "Enum", "EnumItem"
 }
 
 local PropTypes = {}
@@ -35,6 +35,25 @@ PropTypes.func = Rule.fromTypeName("function")
 PropTypes.matchesAll = Rule.fromComposite
 PropTypes.matchesAny = Rule.fromMultiple
 PropTypes.shape = Rule.fromShape
+
+PropTypes.enumOf = function(enum)
+	return Rule.fromComposite(
+		PropTypes.EnumItem,
+		Rule.fromFunction(function(value)
+			return value.EnumType == enum, ("EnumItem %s is not a member of the %s Enum"):format(
+				tostring(value),
+				tostring(enum)
+			)
+		end)
+	)
+end
+
+PropTypes.element = Rule.fromComposite(
+	PropTypes.table,
+	Rule.fromFunction(function(value)
+		return value.isElement == true, "table is not a Roact element"
+	end)
+)
 
 local function valueMatches(value, rule)
 	-- For non-table rules:
