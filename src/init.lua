@@ -215,23 +215,31 @@ function PropTypes.apply(component, rules, options)
 			assert(PropTypes.validate(props, rules, options))
 			return component(props)
 		end
-	-- Stateful components need to be mutated.
-	-- TODO: investigate possibility of copying component?
+	-- Stateful components need to be shallow-copied
 	elseif typeof(component) == "table" then
+		local copy = {}
+
+		for key, value in pairs(component) do
+			copy[key] = value
+		end
+
+		-- Copy the metatable!
+		setmetatable(copy, getmetatable(component))
+
 		local originalInit = component.init
 		local originalWillUpdate = component.willUpdate
 
-		component.init = function(self, props)
+		copy.init = function(self, props)
 			assert(PropTypes.validate(props, rules, options))
 			originalInit(self, props)
 		end
 
-		component.willUpdate = function(self, props)
+		copy.willUpdate = function(self, props)
 			assert(PropTypes.validate(props, rules, options))
 			originalWillUpdate(self, props)
 		end
 
-		return component
+		return copy
 	else
 		error(("Components of type %s are not supported")):format(typeof(component), 0)
 	end
