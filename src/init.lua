@@ -2,7 +2,7 @@ local Rule = require(script.Rule)
 
 local BUILTIN_TYPE_NAMES = {
 	"string", "number", "table", "boolean",
-	"coroutine", "function", "userdata",
+	"coroutine", "userdata",
 	"Axes", "BrickColor", "CFrame", "Color3",
 	"ColorSequence", "ColorSequenceKeypoint",
 	"Faces", "Instance", "NumberRange",
@@ -31,6 +31,7 @@ function PropTypes.ofClass(className)
 	)
 end
 
+PropTypes.func = Rule.fromTypeName("function")
 PropTypes.matchesAll = Rule.fromComposite
 PropTypes.matchesAny = Rule.fromMultiple
 PropTypes.shape = Rule.fromShape
