@@ -202,7 +202,7 @@ function PropTypes.validate(props, propTypes, options)
 	return true
 end
 
-function PropTypes.apply(component, rules)
+function PropTypes.apply(component, rules, options)
 	-- TODO: Do not wrap if Roact's debug mode is disabled.
 	-- Currently impossible - Roact doesn't expose the debug status.
 
@@ -212,7 +212,7 @@ function PropTypes.apply(component, rules)
 	-- Functional components can be simply wrapped.
 	elseif typeof(component) == "function" then
 		return function(props)
-			assert(PropTypes.validate(props, rules))
+			assert(PropTypes.validate(props, rules, options))
 			return component(props)
 		end
 	-- Stateful components need to be mutated.
@@ -222,12 +222,12 @@ function PropTypes.apply(component, rules)
 		local originalWillUpdate = component.willUpdate
 
 		component.init = function(self, props)
-			assert(PropTypes.validate(props, rules))
+			assert(PropTypes.validate(props, rules, options))
 			originalInit(self, props)
 		end
 
 		component.willUpdate = function(self, props)
-			assert(PropTypes.validate(props, rules))
+			assert(PropTypes.validate(props, rules, options))
 			originalWillUpdate(self, props)
 		end
 
