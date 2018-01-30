@@ -155,6 +155,23 @@ PropTypes.oneOf = function(possibilities)
 	end)
 end
 
+PropTypes.tableOf = function(rule)
+	return Rule.fromComposite(
+		PropTypes.table,
+		Rule.fromFunction(function(value)
+			for key, subValue in pairs(value) do
+				if not valueMatches(subValue, rule) then
+					return false, ("the %s %q at key %q did not match the rule"):format(
+						typeof(subValue),
+						tostring(subValue),
+						tostring(key)
+					)
+				end
+			end
+		end)
+	)
+end
+
 function PropTypes.validate(props, propTypes, options)
 	options = options or {}
 	local strictMode = options.strict
