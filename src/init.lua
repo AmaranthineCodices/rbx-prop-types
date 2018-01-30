@@ -140,6 +140,21 @@ PropTypes.element = Rule.fromComposite(
 	end)
 )
 
+PropTypes.oneOf = function(possibilities)
+	return Rule.fromFunction(function(value)
+		for _, possibility in pairs(possibilities) do
+			if possibility == value then
+				return true
+			end
+		end
+
+		return false, ("the %s %q was not any of the possible values"):format(
+			typeof(value),
+			tostring(value)
+		)
+	end)
+end
+
 function PropTypes.validate(props, propTypes, options)
 	options = options or {}
 	local strictMode = options.strict
