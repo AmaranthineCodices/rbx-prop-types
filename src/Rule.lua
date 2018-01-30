@@ -11,12 +11,20 @@ end
 local ruleMetatable = {}
 
 ruleMetatable.__index = function(self, key)
-    return ruleMetatable[key](self)
+    local value = ruleMetatable[key]
+
+    if value then
+        if typeof(value) == "function" then
+            return ruleMetatable[key](self)
+        else
+            return value
+        end
+    end
 end
 
 ruleMetatable["optional"] = function(self)
     local copy = copyTable(self)
-    copy.optional = true
+    copy._optional = true
 
     return setmetatable(copy, ruleMetatable)
 end
