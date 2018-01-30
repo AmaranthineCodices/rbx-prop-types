@@ -38,8 +38,12 @@ local function valueMatches(value, rule)
 
 	-- Explicitly compare to nil instead of using `not value` to avoid
 	-- false-negatives when the value is false
-	if value == nil and not rule._optional then
-		return false, "value is not optional"
+	if value == nil then
+		if not rule._optional then
+			return false, "value is not optional"
+		else
+			return true
+		end
 	end
 
 	-- The "simple" rule type checks if typeof(value) == expectedType.
