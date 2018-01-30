@@ -1,0 +1,94 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "rbx-prop-types is a Roblox version of React's \nprop-types\n library. It allows for robust type checking across a table. Here's a quick example:\n\n\nlocal\n \nrules\n \n=\n \n{\n\n    \nrequiredString\n \n=\n \nPropTypes\n.\nstring\n,\n\n    \noptionalString\n \n=\n \nPropTypes\n.\nstring\n.\noptional\n,\n\n    \nshaped\n \n=\n \nPropTypes\n.\nshape\n \n{\n\n        \nnum\n \n=\n \nPropTypes\n.\nnumber\n,\n\n        \nudim\n \n=\n \nPropTypes\n.\nUDim\n,\n\n        \nsub\n \n=\n \nPropTypes\n.\nshape\n \n{\n\n            \na\n \n=\n \nPropTypes\n.\nstring\n,\n\n            \nb\n \n=\n \nPropTypes\n.\nboolean\n\n        \n}\n\n    \n}\n\n\n}\n\n\n\nlocal\n \ndata\n \n=\n \n{\n\n    \nrequiredString\n \n=\n \n\"hello, world!\"\n,\n\n    \n-- optionalString not specified - it's optional!\n\n    \nunknown\n \n=\n \n1\n,\n\n\n    \nshaped\n \n=\n \n{\n\n        \nnum\n \n=\n \n1\n,\n\n        \nudim\n \n=\n \nUDim\n.\nnew\n(\n0\n,\n \n1\n),\n\n        \nsub\n \n=\n \n{\n\n            \na\n \n=\n \n\"hi\"\n,\n\n            \nb\n \n=\n \n1\n,\n\n        \n}\n\n    \n},\n\n\n}\n\n\n\n-- you can use `assert` to throw errors when validation fails\n\n\nassert\n(\nPropTypes\n.\nvalidate\n(\ndata\n,\n \nrules\n))\n\n\n\n\n\n\nrbx-prop-types was built for validating \nRoact\n property tables, and with that in mind, it's super easy to plug into a Roact component. Just call \nPropTypes.apply\n with your component and rules, and it'll give you a wrapped component.",
+            "title": "Home"
+        },
+        {
+            "location": "/api/",
+            "text": "API Reference\n\n\nPropTypes functions\n\n\nvalidate\n\n\nboolean, string? PropTypes.validate(props, propTypes, options)\n\n\n\n\n\nValidates \nprops\n against the rules in \npropTypes\n, with options specified by \noptions\n.\n\n\n\n\nprops\n: A table of values to validate.\n\n\npropTypes\n: A table of rules to validate the values in \nprops\n against.\n\n\noptions\n: A table of options to use when validating.\n\n\noptions.strict\n: Whether to error if a key in \nprops\n has no rule associated with it.\n\n\n\n\n\n\n\n\nReturns \ntrue\n if validation succeeded. Returns \nfalse\n plus a string explaining why if validation failed. This function will never throw errors; if it does, please report the bug.\n\n\nYou can use \nvalidate\n in \nassert\n to error if the validation fails; the message supplied will be automatically thrown with the error.\n\n\napply\n\n\n[function|table] PropTypes.apply(component, propTypes, options)\n\n\n\n\n\nReturns a wrapped component that validates its props against \npropTypes\n whenever they change.\n\n\n\n\ncomponent\n: A Roact stateful or functional component.\n\n\npropTypes\n: A table of rules to validate the \nprops\n table against.\n\n\noptions\n: A table of options to use when validating. Has the same structure as \noptions\n in \nvalidate\n above.\n\n\n\n\n\n\nCaution\n\n\nThis function does not support primitive components (TextLabel, ImageLabel, ...) and will throw an error when supplied with one. Wrap the primitive component in another component instead.\n\n\n\n\n\n\nDanger\n\n\nThis function currently performs type checking \nall the time\n. This will change when Roact's debug status becomes visible. In the meantime, please refrain from using this in high-performance code like animations.\n\n\n\n\nRules\n\n\nPropTypes supplies a large assortment of rules by default.\n\n\nPrimitive types\n\n\nPropTypes allows you to check if a value's type is equal to any primitive type, including Roblox-specific ones:\n\n\n{\n\n    \n-- Checks if the value is a string.\n\n    \nValue\n \n=\n \nPropTypes\n.\nstring\n,\n\n    \n-- Checks if the value is a Vector3.\n\n    \nValue2\n \n=\n \nPropTypes\n.\nVector3\n,\n\n\n}\n\n\n\n\n\n\n\n\nNote\n\n\nBecause \nfunction\n is a Lua keyword, you need to use \nPropTypes.func\n to check if a value is a function.\n\n\n\n\nOptional rules\n\n\nBy default, all rules are \nrequired\n. To make them optional you must index their \noptional\n property, like so:\n\n\n{\n\n    \n-- Checks if the value is a string, while allowing it to be nil.\n\n    \nValue\n \n=\n \nPropTypes\n.\nstring\n.\noptional\n,\n\n\n}\n\n\n\n\n\n\nenumOf\n\n\nTo check if a value is an EnumItem of a specific Enum, you can use \nPropTypes.enumOf\n:\n\n\n{\n\n    \n-- Checks if the value is an EnumItem of the Font enum.\n\n    \nValue\n \n=\n \nPropTypes\n.\nenumOf\n(\nEnum\n.\nFont\n),\n\n\n}\n\n\n\n\n\n\nofClass\n\n\nIf you're expecting an Instance, it can be useful to specify the instance's class name. You can do this with \nPropTypes.ofClass\n:\n\n\n{\n\n    \n-- Checks if the value is an instance descended from GuiObject.\n\n    \nValue\n \n=\n \nPropTypes\n.\nofClass\n(\n\"GuiObject\"\n),\n\n\n}\n\n\n\n\n\n\ntableOf\n\n\nIf you want to guarantee that all the values in the table match the rule, you can use \nPropTypes.tableOf\n:\n\n\n{\n\n    \n-- Checks if the value is a table composed solely of numbers.\n\n    \nValue\n \n=\n \nPropTypes\n.\ntableOf\n(\nPropTypes\n.\nnumber\n)\n\n\n}\n\n\n\n\n\n\nshape\n\n\nChecking if a value is a table is useful in and of itself, but for more complex tables you might want to check that its \nshape\n is correct, too. This can be done with \nPropTypes.shape\n:\n\n\n{\n\n    \nValue\n \n=\n \nPropTypes\n.\nshape\n({\n\n        \n-- Check that the value contains a Key1 key with a number...\n\n        \nKey1\n \n=\n \nPropTypes\n.\nnumber\n,\n\n        \n-- ...and a Key2 key with a string...\n\n        \nKey2\n \n=\n \nPropTypes\n.\nstring\n,\n\n        \n-- ...and a Key3 key with a BasePart.\n\n        \nKey3\n \n=\n \nPropTypes\n.\nofClass\n(\n\"BasePart\"\n),\n\n    \n})\n\n\n}\n\n\n\n\n\n\noneOf\n\n\nIf you make your own enums, \nenumOf\n may not be too useful. You can validate that a value is one of several possibilities with \nPropTypes.oneOf\n:\n\n\n{\n\n    \n-- Checks if the value is either SomeValue or SomeOtherValue.\n\n    \nValue\n \n=\n \nPropTypes\n.\noneOf\n({\n \n\"SomeValue\"\n,\n \n\"SomeOtherValue\"\n \n})\n\n\n}\n\n\n\n\n\n\nelement\n\n\nIf you want to make sure that a value is a Roact element as returned by \nRoact.createElement\n, you can use \nPropTypes.element\n:\n\n\n{\n\n    \n-- Checks if the value is a Roact element.\n\n    \nValue\n \n=\n \nPropTypes\n.\nelement\n,\n\n\n}\n\n\n\n\n\n\nCustom rules\n\n\nYou can create a custom rule by just using a function as a rule. The function should return true or false, and if it returns false it should return a reason for the failure:\n\n\n{\n\n    \n-- Checks if the value is even.\n\n    \n-- This assumes it's a number. Check out 'chaining rules' below!\n\n    \nValue\n \n=\n \nfunction\n(\nvalue\n)\n\n        \nreturn\n \nvalue\n \n%\n \n2\n \n==\n \n0\n,\n \n(\n\"%d was not even\"\n):\nformat\n(\nvalue\n)\n\n    \nend\n,\n\n\n}\n\n\n\n\n\n\nUnion rules\n\n\nYou can say that a value can be one of many types by using \nPropTypes.matchesAny\n:\n\n\n{\n\n    \n-- Checks if the value is a string or a number.\n\n    \nValue\n \n=\n \nPropTypes\n.\nmatchesAny\n(\n\n        \nPropTypes\n.\nstring\n,\n\n        \nPropTypes\n.\nnumber\n\n    \n)\n\n\n}\n\n\n\n\n\n\nThis function is more general than its React contemporary \noneOfType\n. It allows matching on \nany\n arbitrary rule, making constructs like this possible:\n\n\n{\n\n    \n-- Checks if the value is either a function or an EnumItem of SortOrder.\n\n    \nValue\n \n=\n \nPropTypes\n.\nmatchesAny\n(\n\n        \nPropTypes\n.\nfunc\n,\n\n        \nPropTypes\n.\nenumOf\n(\nEnum\n.\nSortOrder\n)\n\n    \n)\n\n\n}\n\n\n\n\n\n\nChaining rules\n\n\nPropTypes allows you to combine rules together with \nPropTypes.matchesAll\n. The returned rule will only validate if the value passes \nall\n the rules:\n\n\n{\n\n    \n-- Checks if the value is both a number *and* an even number.\n\n    \nValue\n \n=\n \nPropTypes\n.\nmatchesAll\n(\n\n        \nPropTypes\n.\nnumber\n,\n\n        \nfunction\n(\nvalue\n)\n\n            \nreturn\n \nvalue\n \n%\n \n2\n \n==\n \n0\n,\n \n(\n\"%d was not even\"\n):\nformat\n(\nvalue\n)\n\n        \nend\n\n    \n)\n\n\n}",
+            "title": "API Reference"
+        },
+        {
+            "location": "/api/#api-reference",
+            "text": "",
+            "title": "API Reference"
+        },
+        {
+            "location": "/api/#proptypes-functions",
+            "text": "",
+            "title": "PropTypes functions"
+        },
+        {
+            "location": "/api/#validate",
+            "text": "boolean, string? PropTypes.validate(props, propTypes, options)  Validates  props  against the rules in  propTypes , with options specified by  options .   props : A table of values to validate.  propTypes : A table of rules to validate the values in  props  against.  options : A table of options to use when validating.  options.strict : Whether to error if a key in  props  has no rule associated with it.     Returns  true  if validation succeeded. Returns  false  plus a string explaining why if validation failed. This function will never throw errors; if it does, please report the bug.  You can use  validate  in  assert  to error if the validation fails; the message supplied will be automatically thrown with the error.",
+            "title": "validate"
+        },
+        {
+            "location": "/api/#apply",
+            "text": "[function|table] PropTypes.apply(component, propTypes, options)  Returns a wrapped component that validates its props against  propTypes  whenever they change.   component : A Roact stateful or functional component.  propTypes : A table of rules to validate the  props  table against.  options : A table of options to use when validating. Has the same structure as  options  in  validate  above.    Caution  This function does not support primitive components (TextLabel, ImageLabel, ...) and will throw an error when supplied with one. Wrap the primitive component in another component instead.    Danger  This function currently performs type checking  all the time . This will change when Roact's debug status becomes visible. In the meantime, please refrain from using this in high-performance code like animations.",
+            "title": "apply"
+        },
+        {
+            "location": "/api/#rules",
+            "text": "PropTypes supplies a large assortment of rules by default.",
+            "title": "Rules"
+        },
+        {
+            "location": "/api/#primitive-types",
+            "text": "PropTypes allows you to check if a value's type is equal to any primitive type, including Roblox-specific ones:  { \n     -- Checks if the value is a string. \n     Value   =   PropTypes . string , \n     -- Checks if the value is a Vector3. \n     Value2   =   PropTypes . Vector3 ,  }    Note  Because  function  is a Lua keyword, you need to use  PropTypes.func  to check if a value is a function.",
+            "title": "Primitive types"
+        },
+        {
+            "location": "/api/#optional-rules",
+            "text": "By default, all rules are  required . To make them optional you must index their  optional  property, like so:  { \n     -- Checks if the value is a string, while allowing it to be nil. \n     Value   =   PropTypes . string . optional ,  }",
+            "title": "Optional rules"
+        },
+        {
+            "location": "/api/#enumof",
+            "text": "To check if a value is an EnumItem of a specific Enum, you can use  PropTypes.enumOf :  { \n     -- Checks if the value is an EnumItem of the Font enum. \n     Value   =   PropTypes . enumOf ( Enum . Font ),  }",
+            "title": "enumOf"
+        },
+        {
+            "location": "/api/#ofclass",
+            "text": "If you're expecting an Instance, it can be useful to specify the instance's class name. You can do this with  PropTypes.ofClass :  { \n     -- Checks if the value is an instance descended from GuiObject. \n     Value   =   PropTypes . ofClass ( \"GuiObject\" ),  }",
+            "title": "ofClass"
+        },
+        {
+            "location": "/api/#tableof",
+            "text": "If you want to guarantee that all the values in the table match the rule, you can use  PropTypes.tableOf :  { \n     -- Checks if the value is a table composed solely of numbers. \n     Value   =   PropTypes . tableOf ( PropTypes . number )  }",
+            "title": "tableOf"
+        },
+        {
+            "location": "/api/#shape",
+            "text": "Checking if a value is a table is useful in and of itself, but for more complex tables you might want to check that its  shape  is correct, too. This can be done with  PropTypes.shape :  { \n     Value   =   PropTypes . shape ({ \n         -- Check that the value contains a Key1 key with a number... \n         Key1   =   PropTypes . number , \n         -- ...and a Key2 key with a string... \n         Key2   =   PropTypes . string , \n         -- ...and a Key3 key with a BasePart. \n         Key3   =   PropTypes . ofClass ( \"BasePart\" ), \n     })  }",
+            "title": "shape"
+        },
+        {
+            "location": "/api/#oneof",
+            "text": "If you make your own enums,  enumOf  may not be too useful. You can validate that a value is one of several possibilities with  PropTypes.oneOf :  { \n     -- Checks if the value is either SomeValue or SomeOtherValue. \n     Value   =   PropTypes . oneOf ({   \"SomeValue\" ,   \"SomeOtherValue\"   })  }",
+            "title": "oneOf"
+        },
+        {
+            "location": "/api/#element",
+            "text": "If you want to make sure that a value is a Roact element as returned by  Roact.createElement , you can use  PropTypes.element :  { \n     -- Checks if the value is a Roact element. \n     Value   =   PropTypes . element ,  }",
+            "title": "element"
+        },
+        {
+            "location": "/api/#custom-rules",
+            "text": "You can create a custom rule by just using a function as a rule. The function should return true or false, and if it returns false it should return a reason for the failure:  { \n     -- Checks if the value is even. \n     -- This assumes it's a number. Check out 'chaining rules' below! \n     Value   =   function ( value ) \n         return   value   %   2   ==   0 ,   ( \"%d was not even\" ): format ( value ) \n     end ,  }",
+            "title": "Custom rules"
+        },
+        {
+            "location": "/api/#union-rules",
+            "text": "You can say that a value can be one of many types by using  PropTypes.matchesAny :  { \n     -- Checks if the value is a string or a number. \n     Value   =   PropTypes . matchesAny ( \n         PropTypes . string , \n         PropTypes . number \n     )  }   This function is more general than its React contemporary  oneOfType . It allows matching on  any  arbitrary rule, making constructs like this possible:  { \n     -- Checks if the value is either a function or an EnumItem of SortOrder. \n     Value   =   PropTypes . matchesAny ( \n         PropTypes . func , \n         PropTypes . enumOf ( Enum . SortOrder ) \n     )  }",
+            "title": "Union rules"
+        },
+        {
+            "location": "/api/#chaining-rules",
+            "text": "PropTypes allows you to combine rules together with  PropTypes.matchesAll . The returned rule will only validate if the value passes  all  the rules:  { \n     -- Checks if the value is both a number *and* an even number. \n     Value   =   PropTypes . matchesAll ( \n         PropTypes . number , \n         function ( value ) \n             return   value   %   2   ==   0 ,   ( \"%d was not even\" ): format ( value ) \n         end \n     )  }",
+            "title": "Chaining rules"
+        }
+    ]
+}
