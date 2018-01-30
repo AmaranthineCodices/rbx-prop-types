@@ -170,4 +170,39 @@ function PropTypes.validate(props, propTypes, options)
 	return true
 end
 
+function PropTypes.apply(component, rules)
+	-- TODO: Do not wrap if Roact's debug mode is disabled.
+	-- Currently impossible - Roact doesn't expose the debug status.
+
+	-- Primitive components aren't supported by PropTypes.
+	if typeof(component) == "string" then
+		error("Primitive components are not supported!", 0)
+	-- Functional components can be simply wrapped.
+	elseif typeof(component) == "function" then
+		return function(props)
+			assert(PropTypes.validate(props, rules))
+			return component(props)
+		end
+	-- Stateful components need to be mutated.
+	-- TODO: investigate possibility of copying component?
+	elseif typeof(component) == "table" then
+		local originalInit = component.init
+		local originalWillUpdate = component.willUpdate
+
+		component.init = function(self, props)
+			assert(PropTypes.validate(props, rules))
+			originalInit(self, props)
+		end
+
+		component.willUpdate = function(self, props)
+			assert(PropTypes.validate(props, rules))
+			originalWillUpdate(self, props)
+		end
+
+		return component
+	else
+		error(("Components of type %s are not supported")):format(typeof(component), 0)
+	end
+end
+
 return PropTypes
