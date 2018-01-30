@@ -13,48 +13,6 @@ local BUILTIN_TYPE_NAMES = {
 	"Vector3int16", "Enum", "EnumItem"
 }
 
-local PropTypes = {}
-
-for _, typeName in ipairs(BUILTIN_TYPE_NAMES) do
-	PropTypes[typeName] = Rule.fromTypeName(typeName)
-end
-
-function PropTypes.ofClass(className)
-	return Rule.fromComposite(
-		PropTypes.Instance,
-		function(value)
-			return value:IsA(className), ("expected an instance of %s, got %s"):format(
-				className,
-				value.ClassName
-			)
-		end
-	)
-end
-
-PropTypes.func = Rule.fromTypeName("function")
-PropTypes.matchesAll = Rule.fromComposite
-PropTypes.matchesAny = Rule.fromMultiple
-PropTypes.shape = Rule.fromShape
-
-PropTypes.enumOf = function(enum)
-	return Rule.fromComposite(
-		PropTypes.EnumItem,
-		Rule.fromFunction(function(value)
-			return value.EnumType == enum, ("EnumItem %s is not a member of the %s Enum"):format(
-				tostring(value),
-				tostring(enum)
-			)
-		end)
-	)
-end
-
-PropTypes.element = Rule.fromComposite(
-	PropTypes.table,
-	Rule.fromFunction(function(value)
-		return value.isElement == true, "table is not a Roact element"
-	end)
-)
-
 local function valueMatches(value, rule)
 	-- For non-table rules:
 	-- string: match as typeof(value) == rule
@@ -139,6 +97,48 @@ local function valueMatches(value, rule)
 		return rule.validator(value)
 	end
 end
+
+local PropTypes = {}
+
+for _, typeName in ipairs(BUILTIN_TYPE_NAMES) do
+	PropTypes[typeName] = Rule.fromTypeName(typeName)
+end
+
+function PropTypes.ofClass(className)
+	return Rule.fromComposite(
+		PropTypes.Instance,
+		function(value)
+			return value:IsA(className), ("expected an instance of %s, got %s"):format(
+				className,
+				value.ClassName
+			)
+		end
+	)
+end
+
+PropTypes.func = Rule.fromTypeName("function")
+PropTypes.matchesAll = Rule.fromComposite
+PropTypes.matchesAny = Rule.fromMultiple
+PropTypes.shape = Rule.fromShape
+
+PropTypes.enumOf = function(enum)
+	return Rule.fromComposite(
+		PropTypes.EnumItem,
+		Rule.fromFunction(function(value)
+			return value.EnumType == enum, ("EnumItem %s is not a member of the %s Enum"):format(
+				tostring(value),
+				tostring(enum)
+			)
+		end)
+	)
+end
+
+PropTypes.element = Rule.fromComposite(
+	PropTypes.table,
+	Rule.fromFunction(function(value)
+		return value.isElement == true, "table is not a Roact element"
+	end)
+)
 
 function PropTypes.validate(props, propTypes, options)
 	options = options or {}
