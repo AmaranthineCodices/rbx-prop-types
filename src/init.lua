@@ -172,6 +172,8 @@ PropTypes.tableOf = function(rule)
 					)
 				end
 			end
+
+			return true
 		end)
 	)
 end
