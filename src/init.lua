@@ -160,4 +160,27 @@ function PropTypes.tableOf(itemValidator)
 	)
 end
 
+function PropTypes.oneOf(possibilities)
+	-- Generate a list of all the tostring-ed possiblities.
+	-- This allows the use of table.concat.
+	local stringPossibilities = {}
+
+	for _, possibility in ipairs(possibilities) do
+		table.insert(stringPossibilities, tostring(possibility))
+	end
+
+	return function(value)
+		for _, possibility in ipairs(possibilities) do
+			if possibility == value then
+				return true
+			end
+		end
+
+		return false, ("%q is not in the list of possibilities: { %s }"):format(
+			tostring(value),
+			table.concat(stringPossibilities, ", ")
+		)
+	end
+end
+
 return PropTypes
