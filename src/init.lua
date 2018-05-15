@@ -103,7 +103,7 @@ function PropTypes.object(shape)
 				local success, failureReason = keyValidator(subValue)
 
 				if not success then
-					return false, ("the key %q failed:\n\t%s"):format(failureReason)
+					return false, ("the key %q failed:\n\t%s"):format(key, failureReason)
 				end
 			end
 
