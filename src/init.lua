@@ -21,4 +21,14 @@ for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
 	end
 end
 
+function PropTypes.optional(inner)
+	return function(value)
+		if value == nil then
+			return true
+		else
+			return inner(value)
+		end
+	end
+end
+
 return PropTypes
