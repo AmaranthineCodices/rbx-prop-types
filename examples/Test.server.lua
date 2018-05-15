@@ -1,12 +1,12 @@
 local PropTypes = require(game.ReplicatedStorage.PropTypes)
 
-local someRules = {
+local validator = PropTypes.object {
     requiredString = PropTypes.string,
-    optionalString = PropTypes.string.optional,
-    shaped = PropTypes.shape {
+    optionalString = PropTypes.optional(PropTypes.string),
+    shaped = PropTypes.object {
         num = PropTypes.number,
         udim = PropTypes.UDim,
-        sub = PropTypes.shape {
+        sub = PropTypes.object {
             a = PropTypes.string,
             b = PropTypes.boolean
         }
@@ -30,4 +30,4 @@ local someData = {
 }
 
 -- you can use `assert` to throw errors when validation fails
-assert(PropTypes.validate(someData, someRules))
+assert(validator(someData))
