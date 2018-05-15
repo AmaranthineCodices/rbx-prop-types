@@ -22,6 +22,46 @@ for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
 end
 
 --[[
+	Creates a validator that checks if all its supplied validator functions
+	affirm the value.
+]]
+function PropTypes.all(...)
+	local validators = { ... }
+
+	return function(value)
+		for _, validator in ipairs(validators) do
+			local success, failureReason = validator(value)
+
+			if not success then
+				return false, failureReason
+			end
+		end
+
+		return true
+	end
+end
+
+--[[
+	Creates a validator that checks if any of its supplied validator functions
+	affirm the value.
+]]
+function PropTypes.any(...)
+	local validators = { ... }
+
+	return function(value)
+		for _, validator in ipairs(validators) do
+			local success, _ = validator(value)
+
+			if success then
+				return true
+			end
+		end
+
+		return false, ("No validators affirmed the value %q"):format(tostring(value))
+	end
+end
+
+--[[
 	Returns a new validator function that behaves identically to the original,
 	but allows `nil` to be passed through.
 ]]
