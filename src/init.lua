@@ -108,7 +108,7 @@ function PropTypes.object(shape)
 			end
 	
 			return true
-		end,
+		end
 	)
 end
 
