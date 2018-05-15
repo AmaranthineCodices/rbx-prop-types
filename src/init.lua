@@ -103,6 +103,10 @@ function PropTypes.object(shape)
 				local success, failureReason = keyValidator(subValue)
 
 				if not success then
+					failureReason = failureReason:gsub("\t+", function(tabSequence)
+						return tabSequence .. "\t"
+					end)
+
 					return false, ("the key %q failed:\n\t%s"):format(key, failureReason)
 				end
 			end
