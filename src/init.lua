@@ -129,4 +129,13 @@ function PropTypes.enumOf(enum)
 	)
 end
 
+function PropTypes.ofClass(className)
+	return PropTypes.all(
+		PropTypes.Instance,
+		function(value)
+			return value:IsA(className)
+		end
+	)
+end
+
 return PropTypes
