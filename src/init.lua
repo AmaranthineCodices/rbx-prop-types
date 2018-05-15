@@ -138,4 +138,26 @@ function PropTypes.ofClass(className)
 	)
 end
 
+function PropTypes.tableOf(itemValidator)
+	return PropTypes.all(
+		PropTypes.table,
+		function(value)
+			for key, subValue in pairs(value) do
+				local success, failureReason = itemValidator(subValue)
+
+				if not success then
+					return false, ("the value %q of type %q at key %q failed validation:\n\t%s"):format(
+						tostring(subValue),
+						typeof(subValue),
+						tostring(key),
+						failureReason
+					)
+				end
+			end
+
+			return true
+		end,
+	)
+end
+
 return PropTypes
