@@ -16,8 +16,6 @@ local validator = PropTypes.object {
 local someData = {
     requiredString = "hello, world!",
     -- optionalString not specified - it's optional!
-    -- this shouldn't be here and will cause validation to fail in strict mode!
-    unknown = 1,
 
     shaped = {
         num = 1,
