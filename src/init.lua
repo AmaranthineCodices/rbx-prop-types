@@ -133,7 +133,11 @@ function PropTypes.ofClass(className)
 	return PropTypes.all(
 		PropTypes.Instance,
 		function(value)
-			return value:IsA(className)
+			return value:IsA(className), ("the Instance %s is not descended from the class %q (is a %q)"):format(
+				value:GetFullName(),
+				className,
+				value.ClassName
+			)
 		end
 	)
 end
