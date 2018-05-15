@@ -13,4 +13,12 @@ local BUILTIN_TYPE_NAMES = {
 
 local PropTypes = {}
 
+for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
+	PropTypes[typeName] = function(value)
+		local valueType = typeof(value)
+
+		return valueType == typeName, ("expected type %q, got type %q"):format(typeName, valueType)
+	end
+end
+
 return PropTypes
