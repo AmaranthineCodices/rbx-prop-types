@@ -156,7 +156,7 @@ function PropTypes.tableOf(itemValidator)
 			end
 
 			return true
-		end,
+		end
 	)
 end
 
