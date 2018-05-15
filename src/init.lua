@@ -21,6 +21,10 @@ for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
 	end
 end
 
+function PropTypes.userdata(value)
+	return type(value) == "userdata", ("expected type \"userdata\", got type %q"):format(typeof(value))
+end
+
 --[[
 	Creates a validator that checks if all its supplied validator functions
 	affirm the value.
