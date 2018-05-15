@@ -80,4 +80,36 @@ function PropTypes.optional(inner)
 	end
 end
 
+--[[
+	A validator function that checks if you can index into the value.
+	Does not check if you can *successfully* index into the value with a
+	specific key, but does make sure that you're not going to try to index into
+	a number or string!
+]]
+local indexable = PropTypes.any(
+	PropTypes.table,
+	PropTypes.userdata
+)
+
+--[[
+	Creates a validator function that checks if a value matches a given shape.
+]]
+function PropTypes.object(shape)
+	return PropTypes.all(
+		indexable,
+		function(value)
+			for key, keyValidator in pairs(shape) do
+				local subValue = value[key]
+				local success, failureReason = keyValidator(subValue)
+	
+				if not success then
+					return false, ("the key %q failed:\n\t%s"):format(failureReason)
+				end
+			end
+	
+			return true
+		end,
+	)
+end
+
 return PropTypes
