@@ -101,13 +101,30 @@ function PropTypes.object(shape)
 			for key, keyValidator in pairs(shape) do
 				local subValue = value[key]
 				local success, failureReason = keyValidator(subValue)
-	
+
 				if not success then
 					return false, ("the key %q failed:\n\t%s"):format(failureReason)
 				end
 			end
-	
+
 			return true
+		end
+	)
+end
+
+--[[
+	Creates a validator that checks if a value is an EnumItem of a particular
+	Enum.
+]]
+function PropTypes.enumOf(enum)
+	return PropTypes.all(
+		PropTypes.EnumItem,
+		function(value)
+			return value.EnumType == enum, ("the EnumItem %q belongs to the %q Enum, not the %q Enum"):format(
+				tostring(value),
+				tostring(value.EnumType),
+				tostring(enum)
+			)
 		end
 	)
 end
