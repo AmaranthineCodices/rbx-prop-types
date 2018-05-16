@@ -1,6 +1,6 @@
 local BUILTIN_TYPE_NAMES = {
 	"string", "number", "table", "boolean",
-	"coroutine", "userdata",
+	"coroutine",
 	"Axes", "BrickColor", "CFrame", "Color3",
 	"ColorSequence", "ColorSequenceKeypoint",
 	"Faces", "Instance", "NumberRange",
@@ -27,7 +27,7 @@ end
 
 --[[
 	Creates a validator that checks if all its supplied validator functions
-	affirm the value.
+	succeeded.
 ]]
 function PropTypes.all(...)
 	local validators = { ... }
@@ -47,7 +47,7 @@ end
 
 --[[
 	Creates a validator that checks if any of its supplied validator functions
-	affirm the value.
+	succeeded.
 ]]
 function PropTypes.any(...)
 	local validators = { ... }
@@ -96,6 +96,7 @@ local indexable = PropTypes.any(
 ]]
 function PropTypes.object(shape)
 	return PropTypes.all(
+		-- If we definitely can't index into the value, it can't have a shape!
 		indexable,
 		function(value)
 			for key, keyValidator in pairs(shape) do
@@ -103,6 +104,9 @@ function PropTypes.object(shape)
 				local success, failureReason = keyValidator(subValue)
 
 				if not success then
+					-- Increase the indentation of all indented lines in the
+					-- failure reason by one. This makes indents nest nicely
+					-- when you have multiple nested `object` validators.
 					failureReason = failureReason:gsub("\t+", function(tabSequence)
 						return tabSequence .. "\t"
 					end)
