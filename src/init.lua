@@ -25,6 +25,10 @@ function PropTypes.userdata(value)
 	return type(value) == "userdata", ("expected type \"userdata\", got type %q"):format(typeof(value))
 end
 
+function PropTypes.func(value)
+	return type(value) == "function", ("expected type \"function\", got type %q"):format(typeof(value))
+end
+
 --[[
 	Creates a validator that checks if all its supplied validator functions
 	succeeded.
