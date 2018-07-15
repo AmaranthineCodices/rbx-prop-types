@@ -103,6 +103,8 @@ function PropTypes.object(shape)
 		-- If we definitely can't index into the value, it can't have a shape!
 		indexable,
 		function(value)
+			local failures = {}
+
 			for key, keyValidator in pairs(shape) do
 				local subValue = value[key]
 				local success, failureReason = keyValidator(subValue)
@@ -111,15 +113,23 @@ function PropTypes.object(shape)
 					-- Increase the indentation of all indented lines in the
 					-- failure reason by one. This makes indents nest nicely
 					-- when you have multiple nested `object` validators.
-					failureReason = failureReason:gsub("\t+", function(tabSequence)
+					failureReason = failureReason:gsub("\n\t*", function(tabSequence)
 						return tabSequence .. "\t"
 					end)
 
-					return false, ("the key %q failed:\n\t%s"):format(key, failureReason)
+					table.insert(failures, ("key %q: %s"):format(key, failureReason))
 				end
 			end
 
-			return true
+			if #failures > 0 then
+				return false, ("%d key%s incorrect:\n%s"):format(
+					#failures,
+					#failures == 1 and " is" or "s are",
+					table.concat(failures, "\n")
+				)
+			else
+				return true
+			end
 		end
 	)
 end
@@ -158,20 +168,30 @@ function PropTypes.tableOf(itemValidator)
 	return PropTypes.all(
 		PropTypes.table,
 		function(value)
+			local failures = {}
+
 			for key, subValue in pairs(value) do
 				local success, failureReason = itemValidator(subValue)
 
 				if not success then
-					return false, ("the value %q of type %q at key %q failed validation:\n\t%s"):format(
+					table.insert(failures, ("\tkey %q (%q of type %q):\n\t\t%s"):format(
+						tostring(key),
 						tostring(subValue),
 						typeof(subValue),
-						tostring(key),
 						failureReason
-					)
+					))
 				end
 			end
 
-			return true
+			if #failures > 0 then
+				return false, ("%d key%s incorrect:\n%s"):format(
+					#failures,
+					#failures == 1 and " is" or "s are",
+					table.concat(failures, "\n")
+				)
+			else
+				return true
+			end
 		end
 	)
 end
@@ -220,8 +240,9 @@ function PropTypes.tuple(...)
 		end
 
 		if #failures > 0 then
-			return false, ("%d arguments are incorrect:\n%s"):format(
+			return false, ("%d argument%s incorrect:\n%s"):format(
 				#failures,
+				#failures == 1 and " is" or "s are",
 				table.concat(failures, "\n")
 			)
 		else
