@@ -21,11 +21,22 @@ local someData = {
         num = 1,
         udim = UDim.new(0, 1),
         sub = {
-            a = "hi",
+            a = false,
             b = 1,
         }
     },
 }
 
 -- you can use `assert` to throw errors when validation fails
-assert(validator(someData))
+spawn(function()
+    assert(validator(someData))
+end)
+
+local tupleValidator = PropTypes.tuple(
+    PropTypes.string,
+    PropTypes.number
+)
+
+spawn(function()
+    assert(tupleValidator("test", false))
+end)
