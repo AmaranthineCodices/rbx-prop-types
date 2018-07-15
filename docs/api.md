@@ -65,6 +65,16 @@ If you make your own enums, `enumOf` may not be too useful. You can validate tha
 local validator = PropTypes.oneOf({ "SomeValue", "SomeOtherValue" })
 ```
 
+### tuple
+`tuple` lets you construct a validator for tuples, for validating function arguments easily:
+
+```lua
+local validator = PropTypes.tuple(
+    PropTypes.number,
+    PropTypes.string
+)
+```
+
 ## Combining validators
 PropTypes provides two ways to combine validator functions: allowing a value if it matches any one validator with `PropTypes.any`, and allowing a value if it matches only all the validators with `PropTypes.all`.
 

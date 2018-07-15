@@ -199,4 +199,35 @@ function PropTypes.oneOf(possibilities)
 	end
 end
 
+function PropTypes.tuple(...)
+	local validators = { ... }
+
+	return function(...)
+		local failures = {}
+
+		for i = 1, select("#", ...) do
+			local value = select(i, ...)
+			local validator = validators[i]
+
+			local success, message = validator(value)
+			if not success then
+				table.insert(failures, ("\targument #%d: %s"):format(
+					i,
+					message
+				))
+
+			end
+		end
+
+		if #failures > 0 then
+			return false, ("%d arguments are incorrect:\n%s"):format(
+				#failures,
+				table.concat(failures, "\n")
+			)
+		else
+			return true
+		end
+	end
+end
+
 return PropTypes
