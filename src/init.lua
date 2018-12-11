@@ -17,16 +17,16 @@ for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
 	PropTypes[typeName] = function(value)
 		local valueType = typeof(value)
 
-		return valueType == typeName, ("expected type %s, got type %s"):format(typeName, valueType)
+		return valueType == typeName, ("expected type %q, got type %q"):format(typeName, valueType)
 	end
 end
 
 function PropTypes.userdata(value)
-	return type(value) == "userdata", ("expected type \"userdata\", got type %s"):format(typeof(value))
+	return type(value) == "userdata", ("expected type \"userdata\", got type %q"):format(typeof(value))
 end
 
 function PropTypes.func(value)
-	return type(value) == "function", ("expected type \"function\", got type %s"):format(typeof(value))
+	return type(value) == "function", ("expected type \"function\", got type %q"):format(typeof(value))
 end
 
 --[[
