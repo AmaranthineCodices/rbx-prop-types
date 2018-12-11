@@ -18,6 +18,20 @@ stds.roblox = {
 		"CFrame",
 		"Enum",
 		"Instance",
+		"Axes",
+		"BrickColor",
+		"ColorSequence",
+		"ColorSequenceKeypoint",
+		"Faces",
+		"NumberRange",
+		"NumberSequence",
+		"NumberSequenceKeypoint",
+		"PhysicalProperties",
+		"Ray",
+		"Region3",
+		"Region3int16",
+		"TweenInfo",
+		"Vector3int16",
 	}
 }
 
