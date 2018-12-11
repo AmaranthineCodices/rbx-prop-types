@@ -29,6 +29,14 @@ function PropTypes.func(value)
 	return type(value) == "function", ("expected type \"function\", got type %q"):format(typeof(value))
 end
 
+function PropTypes.some(value)
+	return value ~= nil, "expected a value, got nil"
+end
+
+function PropTypes.none(value)
+	return value == nil, ("expected no value, got %q of type %q"):format(tostring(value), typeof(value))
+end
+
 --[[
 	Creates a validator that checks if all its supplied validator functions
 	succeeded.
