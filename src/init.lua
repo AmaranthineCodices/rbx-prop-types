@@ -11,6 +11,8 @@ local BUILTIN_TYPE_NAMES = {
 	"Vector3int16", "Enum", "EnumItem"
 }
 
+local DEFAULT_REASON = "<validation failed: no reason given>"
+
 local PropTypes = {}
 
 for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
@@ -49,7 +51,7 @@ function PropTypes.all(...)
 			local success, failureReason = validator(value)
 
 			if not success then
-				return false, failureReason
+				return false, failureReason or DEFAULT_REASON
 			end
 		end
 
@@ -116,6 +118,8 @@ function PropTypes.object(shape)
 			for key, keyValidator in pairs(shape) do
 				local subValue = value[key]
 				local success, failureReason = keyValidator(subValue)
+
+				failureReason = failureReason or DEFAULT_REASON
 
 				if not success then
 					-- Increase the indentation of all indented lines in the
@@ -186,7 +190,7 @@ function PropTypes.tableOf(itemValidator)
 						tostring(key),
 						tostring(subValue),
 						typeof(subValue),
-						failureReason
+						failureReason or DEFAULT_REASON
 					))
 				end
 			end
@@ -241,7 +245,7 @@ function PropTypes.tuple(...)
 			if not success then
 				table.insert(failures, ("\targument #%d: %s"):format(
 					i,
-					message
+					message or DEFAULT_REASON
 				))
 
 			end
