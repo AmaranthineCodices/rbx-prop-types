@@ -147,6 +147,37 @@ function PropTypes.object(shape)
 end
 
 --[[
+	Creates a validator function that checks if a value matches a given shape exactly, failing if the value contains
+	a key not specified in the shape.
+]]
+function PropTypes.strictObject(shape)
+	return PropTypes.all(
+		PropTypes.object(shape),
+		-- object will handle any keys that are supposed to be there; this only needs to check for the presence of
+		-- unspecified keys.
+		function(value)
+			local failures = {}
+
+			for key, _ in pairs(value) do
+				if shape[key] == nil then
+					table.insert(failures, ("%q"):format(tostring(key)))
+				end
+			end
+
+			if #failures > 0 then
+				return false, ("%d illegal key%s present: { %s }"):format(
+					#failures,
+					#failures == 1 and " is" or "s are",
+					table.concat(failures, ", ")
+				)
+			else
+				return true
+			end
+		end
+	)
+end
+
+--[[
 	Creates a validator that checks if a value is an EnumItem of a particular
 	Enum.
 ]]
