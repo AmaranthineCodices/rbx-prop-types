@@ -203,7 +203,7 @@ function PropTypes.enumOf(enum, allowCasting)
 				PropTypes.any(PropTypes.string, PropTypes.number),
 				function(value)
 					for _, item in ipairs(enum:GetEnumItems()) do
-						if item.Name == value or enumItem.Value == value then
+						if item.Name == value or item.Value == value then
 							return true
 						end
 					end
