@@ -1,6 +1,7 @@
 local BUILTIN_TYPE_NAMES = {
 	"string", "number", "table", "boolean",
-	"coroutine",
+	-- typeof(coroutine) == thread
+	"thread",
 	"Axes", "BrickColor", "CFrame", "Color3",
 	"ColorSequence", "ColorSequenceKeypoint",
 	"Faces", "Instance", "NumberRange",
@@ -13,15 +14,21 @@ local BUILTIN_TYPE_NAMES = {
 
 local DEFAULT_REASON = "<validation failed: no reason given>"
 
-local PropTypes = {}
-
-for _, typeName in pairs(BUILTIN_TYPE_NAMES) do
-	PropTypes[typeName] = function(value)
+local function makePrimitiveValidator(typeName)
+	return function(value)
 		local valueType = typeof(value)
 
 		return valueType == typeName, ("expected type %q, got type %q"):format(typeName, valueType)
 	end
 end
+
+local PropTypes = {}
+
+for _, typeName in ipairs(BUILTIN_TYPE_NAMES) do
+	PropTypes[typeName] = makePrimitiveValidator(typeName)
+end
+
+PropTypes.coroutine = makePrimitiveValidator("thread")
 
 function PropTypes.userdata(value)
 	return type(value) == "userdata", ("expected type \"userdata\", got type %q"):format(typeof(value))
@@ -33,10 +40,6 @@ end
 
 function PropTypes.some(value)
 	return value ~= nil, "expected a value, got nil"
-end
-
-function PropTypes.none(value)
-	return value == nil, ("expected no value, got %q of type %q"):format(tostring(value), typeof(value))
 end
 
 --[[
