@@ -184,8 +184,8 @@ end
 	Creates a validator that checks if a value is an EnumItem of a particular
 	Enum.
 ]]
-function PropTypes.enumOf(enum)
-	return PropTypes.all(
+function PropTypes.enumOf(enum, allowCasting)
+	local enumItem = PropTypes.all(
 		PropTypes.EnumItem,
 		function(value)
 			return value.EnumType == enum, ("the EnumItem %q belongs to the %q Enum, not the %q Enum"):format(
@@ -195,6 +195,30 @@ function PropTypes.enumOf(enum)
 			)
 		end
 	)
+
+	if allowCasting then
+		return PropTypes.any(
+			enumItem,
+			PropTypes.all(
+				PropTypes.any(PropTypes.string, PropTypes.number),
+				function(value)
+					for _, item in ipairs(enum:GetEnumItems()) do
+						if item.Name == value or enumItem.Value == value then
+							return true
+						end
+					end
+
+					return false, ("the %s %q cannot be coerced to an EnumItem in the %q Enum"):format(
+						typeof(value),
+						tostring(value),
+						tostring(enum)
+					)
+				end
+			)
+		)
+	else
+		return enumItem
+	end
 end
 
 function PropTypes.ofClass(className)
